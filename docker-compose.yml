@@ -1,0 +1,136 @@
+services:
+  # ========== 小号1 ==========
+  # 这是你的第一个小号QQ，用来给主号点赞
+  napcat-account1:
+    image: mlikiowa/napcat-docker:latest
+    container_name: napcat_account1
+    ports:
+      - "6099:6099"  # WebUI 登录端口，访问 http://localhost:6099/webui?token=xxx（token 见 napcat 日志）
+      - "3000:3000"  # HTTP API 端口
+      # - "3001:3001"  # WebSocket 端口（如需 WS 可取消注释）
+    environment:
+      # 文件权限（建议与宿主机用户一致，避免持久化目录权限问题）
+      - NAPCAT_UID=${NAPCAT_UID:-1000}
+      - NAPCAT_GID=${NAPCAT_GID:-1000}
+      - ACCOUNT=2263317812  # 【必改】替换为你的小号1的QQ号
+      # OneBot11 默认配置模板（用于生成 onebot11_<uin>.json）
+      - MODE=qqlike
+    volumes:
+      # QQ 登录数据（不挂载会导致重启后需要重新扫码登录）
+      - ./napcat_data/account1/qq:/app/.config/QQ
+      # NapCat 配置
+      - ./napcat_data/account1/config:/app/napcat/config
+      # OneBot11 模板（入口脚本会拷贝到 /app/napcat/config/onebot11.json）
+      - ./napcat_templates/qqlike.json:/app/templates/qqlike.json:ro
+    restart: unless-stopped
+    networks:
+      - qq_bot_network
+
+  # 小号1的点赞机器人 - 自动给主号点赞
+  like-bot1:
+    build: .
+    container_name: like_bot_1
+    ports:
+      - "127.0.0.1:8088:8080"  # 点赞管理页面（仅本机访问）：http://localhost:8088
+    environment:
+      - ADMIN_ENABLE=true
+      - ADMIN_HOST=0.0.0.0
+      - ADMIN_PORT=8080
+      - ADMIN_PUBLIC_URL=http://localhost:8088
+      - STATE_FILE=/app/data/state.json
+      - SCHEDULE_ENABLED=true
+      - API_URL=http://napcat-account1:3000
+      - ACCESS_TOKEN=
+      - TARGET_FRIENDS=2423996077  # 【必改】你的主号QQ（被点赞的账号）
+      - LIKE_TIMES=10
+      - SCHEDULE_TIME=09:00
+      - DELAY=2
+    volumes:
+      - ./like_bot_data/account1:/app/data
+      - ./qq_auto_like_bot.py:/app/qq_auto_like_bot.py:ro
+    depends_on:
+      - napcat-account1
+    restart: unless-stopped
+    networks:
+      - qq_bot_network
+
+  # ========== 小号2（取消注释以启用）==========
+  # 如果你有第二个小号，取消下面的注释
+  
+  # napcat-account2:
+  #   image: mlikiowa/napcat-docker:latest
+  #   container_name: napcat_account2
+  #   ports:
+  #     - "6100:6099"  # WebUI 登录端口，访问 http://localhost:6100/webui
+  #     - "3001:3000"
+  #     # - "3002:3001"
+  #   environment:
+  #     - NAPCAT_UID=${NAPCAT_UID:-1000}
+  #     - NAPCAT_GID=${NAPCAT_GID:-1000}
+  #     - ACCOUNT=222222222  # 【必改】你的小号2的QQ号
+  #     - MODE=qqlike
+  #   volumes:
+  #     - ./napcat_data/account2/qq:/app/.config/QQ
+  #     - ./napcat_data/account2/config:/app/napcat/config
+  #     - ./napcat_templates/qqlike.json:/app/templates/qqlike.json:ro
+  #   restart: unless-stopped
+  #   networks:
+  #     - qq_bot_network
+
+  # like-bot2:
+  #   build: .
+  #   container_name: like_bot_2
+  #   environment:
+  #     - API_URL=http://napcat-account2:3000
+  #     - ACCESS_TOKEN=
+  #     - TARGET_FRIENDS=999999999  # 【必改】你的主号QQ（和上面保持一致）
+  #     - LIKE_TIMES=10
+  #     - SCHEDULE_TIME=09:05  # 错开时间，避免同时点赞
+  #     - DELAY=2
+  #   depends_on:
+  #     - napcat-account2
+  #   restart: unless-stopped
+  #   networks:
+  #     - qq_bot_network
+
+  # ========== 小号3（取消注释以启用）==========
+  
+  # napcat-account3:
+  #   image: mlikiowa/napcat-docker:latest
+  #   container_name: napcat_account3
+  #   ports:
+  #     - "6101:6099"  # WebUI 登录端口，访问 http://localhost:6101/webui
+  #     - "3002:3000"
+  #     # - "3003:3001"
+  #   environment:
+  #     - NAPCAT_UID=${NAPCAT_UID:-1000}
+  #     - NAPCAT_GID=${NAPCAT_GID:-1000}
+  #     - ACCOUNT=333333333  # 【必改】你的小号3的QQ号
+  #     - MODE=qqlike
+  #   volumes:
+  #     - ./napcat_data/account3/qq:/app/.config/QQ
+  #     - ./napcat_data/account3/config:/app/napcat/config
+  #     - ./napcat_templates/qqlike.json:/app/templates/qqlike.json:ro
+  #   restart: unless-stopped
+  #   networks:
+  #     - qq_bot_network
+
+  # like-bot3:
+  #   build: .
+  #   container_name: like_bot_3
+  #   environment:
+  #     - API_URL=http://napcat-account3:3000
+  #     - ACCESS_TOKEN=
+  #     - TARGET_FRIENDS=999999999  # 【必改】你的主号QQ（和上面保持一致）
+  #     - LIKE_TIMES=10
+  #     - SCHEDULE_TIME=09:10  # 错开时间
+  #     - DELAY=2
+  #   depends_on:
+  #     - napcat-account3
+  #   restart: unless-stopped
+  #   networks:
+  #     - qq_bot_network
+
+networks:
+  qq_bot_network:
+    driver: bridge

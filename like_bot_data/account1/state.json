@@ -1,0 +1,7 @@
+{
+  "schedule_enabled": true,
+  "last_action": "scheduled",
+  "last_action_at": "2026-02-08 09:00:01",
+  "last_action_ok": false,
+  "last_action_detail": "{\"success\": 0, \"fail\": 1}"
+}
