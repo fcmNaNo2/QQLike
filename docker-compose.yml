@@ -65,13 +65,16 @@ services:
       - MANAGER_HOST=0.0.0.0
       - MANAGER_PORT=8090
       # 这里列出要聚合的 like-bot（可按需增删 / 取消注释）
-      - LIKE_BOTS=like-bot1=http://like-bot1:8080
-      # - LIKE_BOTS=like-bot1=http://like-bot1:8080,like-bot2=http://like-bot2:8080,like-bot3=http://like-bot3:8080,like-bot4=http://like-bot4:8080,like-bot5=http://like-bot5:8080
+      - LIKE_BOTS=like-bot1=http://like-bot1:8080,like-bot2=http://like-bot2:8080,like-bot3=http://like-bot3:8080,like-bot4=http://like-bot4:8080,like-bot5=http://like-bot5:8080
     volumes:
       - ./like_manager.py:/app/like_manager.py:ro
       - ./qq_auto_like_bot.py:/app/qq_auto_like_bot.py:ro
     depends_on:
       - like-bot1
+      - like-bot2
+      - like-bot3
+      - like-bot4
+      - like-bot5
     restart: unless-stopped
     networks:
       - qq_bot_network
@@ -86,15 +89,21 @@ services:
       - CHECK_INTERVAL=30
       - RELOGIN_DELAY=300
       - HTTP_TIMEOUT=5
-      # 默认只监控 like-bot1（启用更多账号后按需改成 1-5）
-      - WATCH_ITEMS=like-bot1|napcat_account1
-      # - WATCH_ITEMS=like-bot1|napcat_account1,like-bot2|napcat_account2,like-bot3|napcat_account3,like-bot4|napcat_account4,like-bot5|napcat_account5
+      - WATCH_ITEMS=like-bot1|napcat_account1,like-bot2|napcat_account2,like-bot3|napcat_account3,like-bot4|napcat_account4,like-bot5|napcat_account5
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./napcat_watchdog.py:/app/napcat_watchdog.py:ro
     depends_on:
       - like-bot1
+      - like-bot2
+      - like-bot3
+      - like-bot4
+      - like-bot5
       - napcat-account1
+      - napcat-account2
+      - napcat-account3
+      - napcat-account4
+      - napcat-account5
     restart: unless-stopped
     networks:
       - qq_bot_network
@@ -102,185 +111,183 @@ services:
   # ========== 小号2（取消注释以启用）==========
   # 如果你有第二个小号，取消下面的注释
   
-  # napcat-account2:
-  #   image: mlikiowa/napcat-docker:latest
-  #   container_name: napcat_account2
-  #   ports:
-  #     - "6100:6099"  # WebUI 登录端口，访问 http://localhost:6100/webui
-  #     - "3001:3000"
-  #     # - "3002:3001"
-  #   environment:
-  #     - NAPCAT_UID=${NAPCAT_UID:-1000}
-  #     - NAPCAT_GID=${NAPCAT_GID:-1000}
-  #     - ACCOUNT=222222222  # 【必改】你的小号2的QQ号
-  #     - MODE=qqlike
-  #   volumes:
-  #     - ./napcat_data/account2/qq:/app/.config/QQ
-  #     - ./napcat_data/account2/config:/app/napcat/config
-  #     - ./napcat_templates/qqlike.json:/app/templates/qqlike.json:ro
-  #   restart: unless-stopped
-  #   networks:
-  #     - qq_bot_network
+  napcat-account2:
+    image: mlikiowa/napcat-docker:latest
+    container_name: napcat_account2
+    ports:
+      - "6100:6099"  # WebUI 登录端口，访问 http://localhost:6100/webui
+      - "3001:3000"
+      # - "3002:3001"
+    environment:
+      - NAPCAT_UID=${NAPCAT_UID:-1000}
+      - NAPCAT_GID=${NAPCAT_GID:-1000}
+      - ACCOUNT=1600904730  # 小号2
+      - MODE=qqlike
+    volumes:
+      - ./napcat_data/account2/qq:/app/.config/QQ
+      - ./napcat_data/account2/config:/app/napcat/config
+      - ./napcat_templates/qqlike.json:/app/templates/qqlike.json:ro
+    restart: unless-stopped
+    networks:
+      - qq_bot_network
 
-  # like-bot2:
-  #   build: .
-  #   container_name: like_bot_2
-  #   environment:
-  #     - ADMIN_ENABLE=true
-  #     - ADMIN_HOST=0.0.0.0
-  #     - ADMIN_PORT=8080
-  #     - STATE_FILE=/app/data/state.json
-  #     - SCHEDULE_ENABLED=true
-  #   environment:
-  #     - API_URL=http://napcat-account2:3000
-  #     - ACCESS_TOKEN=
-  #     - TARGET_FRIENDS=999999999  # 【必改】你的主号QQ（和上面保持一致）
-  #     - LIKE_TIMES=10
-  #     - SCHEDULE_TIME=09:05  # 错开时间，避免同时点赞
-  #     - DELAY=2
-  #   volumes:
-  #     - ./like_bot_data/account2:/app/data
-  #     - ./qq_auto_like_bot.py:/app/qq_auto_like_bot.py:ro
-  #   depends_on:
-  #     - napcat-account2
-  #   restart: unless-stopped
-  #   networks:
-  #     - qq_bot_network
+  like-bot2:
+    build: .
+    container_name: like_bot_2
+    environment:
+      - ADMIN_ENABLE=true
+      - ADMIN_HOST=0.0.0.0
+      - ADMIN_PORT=8080
+      - STATE_FILE=/app/data/state.json
+      - SCHEDULE_ENABLED=true
+      - API_URL=http://napcat-account2:3000
+      - ACCESS_TOKEN=
+      - TARGET_FRIENDS=2423996077
+      - LIKE_TIMES=10
+      - SCHEDULE_TIME=09:05  # 错开时间，避免同时点赞
+      - DELAY=2
+    volumes:
+      - ./like_bot_data/account2:/app/data
+      - ./qq_auto_like_bot.py:/app/qq_auto_like_bot.py:ro
+    depends_on:
+      - napcat-account2
+    restart: unless-stopped
+    networks:
+      - qq_bot_network
 
   # ========== 小号3（取消注释以启用）==========
   
-  # napcat-account3:
-  #   image: mlikiowa/napcat-docker:latest
-  #   container_name: napcat_account3
-  #   ports:
-  #     - "6101:6099"  # WebUI 登录端口，访问 http://localhost:6101/webui
-  #     - "3002:3000"
-  #     # - "3003:3001"
-  #   environment:
-  #     - NAPCAT_UID=${NAPCAT_UID:-1000}
-  #     - NAPCAT_GID=${NAPCAT_GID:-1000}
-  #     - ACCOUNT=333333333  # 【必改】你的小号3的QQ号
-  #     - MODE=qqlike
-  #   volumes:
-  #     - ./napcat_data/account3/qq:/app/.config/QQ
-  #     - ./napcat_data/account3/config:/app/napcat/config
-  #     - ./napcat_templates/qqlike.json:/app/templates/qqlike.json:ro
-  #   restart: unless-stopped
-  #   networks:
-  #     - qq_bot_network
+  napcat-account3:
+    image: mlikiowa/napcat-docker:latest
+    container_name: napcat_account3
+    ports:
+      - "6101:6099"  # WebUI 登录端口，访问 http://localhost:6101/webui
+      - "3002:3000"
+      # - "3003:3001"
+    environment:
+      - NAPCAT_UID=${NAPCAT_UID:-1000}
+      - NAPCAT_GID=${NAPCAT_GID:-1000}
+      - ACCOUNT=3046768457  # 小号3
+      - MODE=qqlike
+    volumes:
+      - ./napcat_data/account3/qq:/app/.config/QQ
+      - ./napcat_data/account3/config:/app/napcat/config
+      - ./napcat_templates/qqlike.json:/app/templates/qqlike.json:ro
+    restart: unless-stopped
+    networks:
+      - qq_bot_network
 
-  # like-bot3:
-  #   build: .
-  #   container_name: like_bot_3
-  #   environment:
-  #     - ADMIN_ENABLE=true
-  #     - ADMIN_HOST=0.0.0.0
-  #     - ADMIN_PORT=8080
-  #     - STATE_FILE=/app/data/state.json
-  #     - SCHEDULE_ENABLED=true
-  #   environment:
-  #     - API_URL=http://napcat-account3:3000
-  #     - ACCESS_TOKEN=
-  #     - TARGET_FRIENDS=999999999  # 【必改】你的主号QQ（和上面保持一致）
-  #     - LIKE_TIMES=10
-  #     - SCHEDULE_TIME=09:10  # 错开时间
-  #     - DELAY=2
-  #   volumes:
-  #     - ./like_bot_data/account3:/app/data
-  #     - ./qq_auto_like_bot.py:/app/qq_auto_like_bot.py:ro
-  #   depends_on:
-  #     - napcat-account3
-  #   restart: unless-stopped
-  #   networks:
-  #     - qq_bot_network
+  like-bot3:
+    build: .
+    container_name: like_bot_3
+    environment:
+      - ADMIN_ENABLE=true
+      - ADMIN_HOST=0.0.0.0
+      - ADMIN_PORT=8080
+      - STATE_FILE=/app/data/state.json
+      - SCHEDULE_ENABLED=true
+      - API_URL=http://napcat-account3:3000
+      - ACCESS_TOKEN=
+      - TARGET_FRIENDS=2423996077
+      - LIKE_TIMES=10
+      - SCHEDULE_TIME=09:10  # 错开时间
+      - DELAY=2
+    volumes:
+      - ./like_bot_data/account3:/app/data
+      - ./qq_auto_like_bot.py:/app/qq_auto_like_bot.py:ro
+    depends_on:
+      - napcat-account3
+    restart: unless-stopped
+    networks:
+      - qq_bot_network
 
   # ========== 小号4（取消注释以启用）==========
-  # napcat-account4:
-  #   image: mlikiowa/napcat-docker:latest
-  #   container_name: napcat_account4
-  #   ports:
-  #     - "6102:6099"  # WebUI 登录端口，访问 http://localhost:6102/webui
-  #     - "3003:3000"
-  #   environment:
-  #     - NAPCAT_UID=${NAPCAT_UID:-1000}
-  #     - NAPCAT_GID=${NAPCAT_GID:-1000}
-  #     - ACCOUNT=444444444  # 【必改】你的小号4的QQ号
-  #     - MODE=qqlike
-  #   volumes:
-  #     - ./napcat_data/account4/qq:/app/.config/QQ
-  #     - ./napcat_data/account4/config:/app/napcat/config
-  #     - ./napcat_templates/qqlike.json:/app/templates/qqlike.json:ro
-  #   restart: unless-stopped
-  #   networks:
-  #     - qq_bot_network
+  napcat-account4:
+    image: mlikiowa/napcat-docker:latest
+    container_name: napcat_account4
+    ports:
+      - "6102:6099"  # WebUI 登录端口，访问 http://localhost:6102/webui
+      - "3003:3000"
+    environment:
+      - NAPCAT_UID=${NAPCAT_UID:-1000}
+      - NAPCAT_GID=${NAPCAT_GID:-1000}
+      - ACCOUNT=3896347215  # 小号4
+      - MODE=qqlike
+    volumes:
+      - ./napcat_data/account4/qq:/app/.config/QQ
+      - ./napcat_data/account4/config:/app/napcat/config
+      - ./napcat_templates/qqlike.json:/app/templates/qqlike.json:ro
+    restart: unless-stopped
+    networks:
+      - qq_bot_network
 
-  # like-bot4:
-  #   build: .
-  #   container_name: like_bot_4
-  #   environment:
-  #     - ADMIN_ENABLE=true
-  #     - ADMIN_HOST=0.0.0.0
-  #     - ADMIN_PORT=8080
-  #     - STATE_FILE=/app/data/state.json
-  #     - SCHEDULE_ENABLED=true
-  #     - API_URL=http://napcat-account4:3000
-  #     - ACCESS_TOKEN=
-  #     - TARGET_FRIENDS=999999999  # 【必改】你的主号QQ
-  #     - LIKE_TIMES=10
-  #     - SCHEDULE_TIME=09:15
-  #     - DELAY=2
-  #   volumes:
-  #     - ./like_bot_data/account4:/app/data
-  #     - ./qq_auto_like_bot.py:/app/qq_auto_like_bot.py:ro
-  #   depends_on:
-  #     - napcat-account4
-  #   restart: unless-stopped
-  #   networks:
-  #     - qq_bot_network
+  like-bot4:
+    build: .
+    container_name: like_bot_4
+    environment:
+      - ADMIN_ENABLE=true
+      - ADMIN_HOST=0.0.0.0
+      - ADMIN_PORT=8080
+      - STATE_FILE=/app/data/state.json
+      - SCHEDULE_ENABLED=true
+      - API_URL=http://napcat-account4:3000
+      - ACCESS_TOKEN=
+      - TARGET_FRIENDS=2423996077
+      - LIKE_TIMES=10
+      - SCHEDULE_TIME=09:15
+      - DELAY=2
+    volumes:
+      - ./like_bot_data/account4:/app/data
+      - ./qq_auto_like_bot.py:/app/qq_auto_like_bot.py:ro
+    depends_on:
+      - napcat-account4
+    restart: unless-stopped
+    networks:
+      - qq_bot_network
 
   # ========== 小号5（取消注释以启用）==========
-  # napcat-account5:
-  #   image: mlikiowa/napcat-docker:latest
-  #   container_name: napcat_account5
-  #   ports:
-  #     - "6103:6099"  # WebUI 登录端口，访问 http://localhost:6103/webui
-  #     - "3004:3000"
-  #   environment:
-  #     - NAPCAT_UID=${NAPCAT_UID:-1000}
-  #     - NAPCAT_GID=${NAPCAT_GID:-1000}
-  #     - ACCOUNT=555555555  # 【必改】你的小号5的QQ号
-  #     - MODE=qqlike
-  #   volumes:
-  #     - ./napcat_data/account5/qq:/app/.config/QQ
-  #     - ./napcat_data/account5/config:/app/napcat/config
-  #     - ./napcat_templates/qqlike.json:/app/templates/qqlike.json:ro
-  #   restart: unless-stopped
-  #   networks:
-  #     - qq_bot_network
+  napcat-account5:
+    image: mlikiowa/napcat-docker:latest
+    container_name: napcat_account5
+    ports:
+      - "6103:6099"  # WebUI 登录端口，访问 http://localhost:6103/webui
+      - "3004:3000"
+    environment:
+      - NAPCAT_UID=${NAPCAT_UID:-1000}
+      - NAPCAT_GID=${NAPCAT_GID:-1000}
+      - ACCOUNT=1802055382  # 小号5
+      - MODE=qqlike
+    volumes:
+      - ./napcat_data/account5/qq:/app/.config/QQ
+      - ./napcat_data/account5/config:/app/napcat/config
+      - ./napcat_templates/qqlike.json:/app/templates/qqlike.json:ro
+    restart: unless-stopped
+    networks:
+      - qq_bot_network
 
-  # like-bot5:
-  #   build: .
-  #   container_name: like_bot_5
-  #   environment:
-  #     - ADMIN_ENABLE=true
-  #     - ADMIN_HOST=0.0.0.0
-  #     - ADMIN_PORT=8080
-  #     - STATE_FILE=/app/data/state.json
-  #     - SCHEDULE_ENABLED=true
-  #     - API_URL=http://napcat-account5:3000
-  #     - ACCESS_TOKEN=
-  #     - TARGET_FRIENDS=999999999  # 【必改】你的主号QQ
-  #     - LIKE_TIMES=10
-  #     - SCHEDULE_TIME=09:20
-  #     - DELAY=2
-  #   volumes:
-  #     - ./like_bot_data/account5:/app/data
-  #     - ./qq_auto_like_bot.py:/app/qq_auto_like_bot.py:ro
-  #   depends_on:
-  #     - napcat-account5
-  #   restart: unless-stopped
-  #   networks:
-  #     - qq_bot_network
+  like-bot5:
+    build: .
+    container_name: like_bot_5
+    environment:
+      - ADMIN_ENABLE=true
+      - ADMIN_HOST=0.0.0.0
+      - ADMIN_PORT=8080
+      - STATE_FILE=/app/data/state.json
+      - SCHEDULE_ENABLED=true
+      - API_URL=http://napcat-account5:3000
+      - ACCESS_TOKEN=
+      - TARGET_FRIENDS=2423996077
+      - LIKE_TIMES=10
+      - SCHEDULE_TIME=09:20
+      - DELAY=2
+    volumes:
+      - ./like_bot_data/account5:/app/data
+      - ./qq_auto_like_bot.py:/app/qq_auto_like_bot.py:ro
+    depends_on:
+      - napcat-account5
+    restart: unless-stopped
+    networks:
+      - qq_bot_network
 
   # ========== 小号6（取消注释以启用）==========
   # 如需第 6 个小号，可复制“小号5”的两段配置并改端口/目录/账号
