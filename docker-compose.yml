@@ -12,7 +12,7 @@ services:
       # 文件权限（建议与宿主机用户一致，避免持久化目录权限问题）
       - NAPCAT_UID=${NAPCAT_UID:-1000}
       - NAPCAT_GID=${NAPCAT_GID:-1000}
-      - ACCOUNT=2263317812  # 【必改】替换为你的小号1的QQ号
+      - ACCOUNT=${ACCOUNT_1}  # 【必改】替换为你的小号1的QQ号，在 .env 中配置
       # OneBot11 默认配置模板（用于生成 onebot11_<uin>.json）
       - MODE=qqlike
     volumes:
@@ -40,11 +40,11 @@ services:
       - STATE_FILE=/app/data/state.json
       - SCHEDULE_ENABLED=true
       - API_URL=http://napcat-account1:3000
-      - ACCESS_TOKEN=
-      - TARGET_FRIENDS=2423996077  # 【必改】你的主号QQ（被点赞的账号）
-      - LIKE_TIMES=10
-      - SCHEDULE_TIME=09:00
-      - DELAY=2
+      - ACCESS_TOKEN=${ACCESS_TOKEN}
+      - TARGET_FRIENDS=${TARGET_FRIENDS}  # 【必改】你的主号QQ（被点赞的账号），在 .env 中配置
+      - LIKE_TIMES=${LIKE_TIMES:-10}
+      - SCHEDULE_TIME=${SCHEDULE_TIME:-09:00}
+      - DELAY=${DELAY:-2}
     volumes:
       - ./like_bot_data/account1:/app/data
       - ./qq_auto_like_bot.py:/app/qq_auto_like_bot.py:ro
@@ -121,7 +121,7 @@ services:
     environment:
       - NAPCAT_UID=${NAPCAT_UID:-1000}
       - NAPCAT_GID=${NAPCAT_GID:-1000}
-      - ACCOUNT=1600904730  # 小号2
+      - ACCOUNT=${ACCOUNT_2}  # 小号2，在 .env 中配置
       - MODE=qqlike
     volumes:
       - ./napcat_data/account2/qq:/app/.config/QQ
@@ -141,11 +141,11 @@ services:
       - STATE_FILE=/app/data/state.json
       - SCHEDULE_ENABLED=true
       - API_URL=http://napcat-account2:3000
-      - ACCESS_TOKEN=
-      - TARGET_FRIENDS=2423996077
-      - LIKE_TIMES=10
-      - SCHEDULE_TIME=09:05  # 错开时间，避免同时点赞
-      - DELAY=2
+      - ACCESS_TOKEN=${ACCESS_TOKEN}
+      - TARGET_FRIENDS=${TARGET_FRIENDS}
+      - LIKE_TIMES=${LIKE_TIMES:-10}
+      - SCHEDULE_TIME=${SCHEDULE_TIME_2:-09:05}  # 错开时间，避免同时点赞
+      - DELAY=${DELAY:-2}
     volumes:
       - ./like_bot_data/account2:/app/data
       - ./qq_auto_like_bot.py:/app/qq_auto_like_bot.py:ro
@@ -167,7 +167,7 @@ services:
     environment:
       - NAPCAT_UID=${NAPCAT_UID:-1000}
       - NAPCAT_GID=${NAPCAT_GID:-1000}
-      - ACCOUNT=3046768457  # 小号3
+      - ACCOUNT=${ACCOUNT_3}  # 小号3，在 .env 中配置
       - MODE=qqlike
     volumes:
       - ./napcat_data/account3/qq:/app/.config/QQ
@@ -187,11 +187,11 @@ services:
       - STATE_FILE=/app/data/state.json
       - SCHEDULE_ENABLED=true
       - API_URL=http://napcat-account3:3000
-      - ACCESS_TOKEN=
-      - TARGET_FRIENDS=2423996077
-      - LIKE_TIMES=10
-      - SCHEDULE_TIME=09:10  # 错开时间
-      - DELAY=2
+      - ACCESS_TOKEN=${ACCESS_TOKEN}
+      - TARGET_FRIENDS=${TARGET_FRIENDS}
+      - LIKE_TIMES=${LIKE_TIMES:-10}
+      - SCHEDULE_TIME=${SCHEDULE_TIME_3:-09:10}  # 错开时间
+      - DELAY=${DELAY:-2}
     volumes:
       - ./like_bot_data/account3:/app/data
       - ./qq_auto_like_bot.py:/app/qq_auto_like_bot.py:ro
@@ -211,7 +211,7 @@ services:
     environment:
       - NAPCAT_UID=${NAPCAT_UID:-1000}
       - NAPCAT_GID=${NAPCAT_GID:-1000}
-      - ACCOUNT=3896347215  # 小号4
+      - ACCOUNT=${ACCOUNT_4}  # 小号4，在 .env 中配置
       - MODE=qqlike
     volumes:
       - ./napcat_data/account4/qq:/app/.config/QQ
@@ -231,11 +231,11 @@ services:
       - STATE_FILE=/app/data/state.json
       - SCHEDULE_ENABLED=true
       - API_URL=http://napcat-account4:3000
-      - ACCESS_TOKEN=
-      - TARGET_FRIENDS=2423996077
-      - LIKE_TIMES=10
-      - SCHEDULE_TIME=09:15
-      - DELAY=2
+      - ACCESS_TOKEN=${ACCESS_TOKEN}
+      - TARGET_FRIENDS=${TARGET_FRIENDS}
+      - LIKE_TIMES=${LIKE_TIMES:-10}
+      - SCHEDULE_TIME=${SCHEDULE_TIME_4:-09:15}
+      - DELAY=${DELAY:-2}
     volumes:
       - ./like_bot_data/account4:/app/data
       - ./qq_auto_like_bot.py:/app/qq_auto_like_bot.py:ro
@@ -255,7 +255,7 @@ services:
     environment:
       - NAPCAT_UID=${NAPCAT_UID:-1000}
       - NAPCAT_GID=${NAPCAT_GID:-1000}
-      - ACCOUNT=1802055382  # 小号5
+      - ACCOUNT=${ACCOUNT_5}  # 小号5，在 .env 中配置
       - MODE=qqlike
     volumes:
       - ./napcat_data/account5/qq:/app/.config/QQ
@@ -275,11 +275,11 @@ services:
       - STATE_FILE=/app/data/state.json
       - SCHEDULE_ENABLED=true
       - API_URL=http://napcat-account5:3000
-      - ACCESS_TOKEN=
-      - TARGET_FRIENDS=2423996077
-      - LIKE_TIMES=10
-      - SCHEDULE_TIME=09:20
-      - DELAY=2
+      - ACCESS_TOKEN=${ACCESS_TOKEN}
+      - TARGET_FRIENDS=${TARGET_FRIENDS}
+      - LIKE_TIMES=${LIKE_TIMES:-10}
+      - SCHEDULE_TIME=${SCHEDULE_TIME_5:-09:20}
+      - DELAY=${DELAY:-2}
     volumes:
       - ./like_bot_data/account5:/app/data
       - ./qq_auto_like_bot.py:/app/qq_auto_like_bot.py:ro

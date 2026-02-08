@@ -25,10 +25,13 @@ wheels/
 
 # Docker
 napcat_data/
+like_bot_data/
 *.log
 
-# 环境变量
+# 环境变量（敏感信息）
 .env
+.env.local
+.env.*.local
 
 # IDE
 .vscode/
@@ -45,3 +48,7 @@ napcat_data/
 *.backup
 *.tar.gz
 *.zip
+
+# 临时文件
+.tmp/
+temp/
