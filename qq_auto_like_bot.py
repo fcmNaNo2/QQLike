@@ -483,8 +483,37 @@ def _make_admin_handler(
                 self._send_html(page)
                 return
 
+            if path == "/api/config":
+                self._send_json(config)
+                return
+
             if path == "/api/state":
                 self._send_json(asdict(store.get()))
+                return
+
+            if path == "/api/next_run":
+                try:
+                    next_run = (
+                        schedule.jobs[0].next_run.isoformat(sep=" ", timespec="seconds") if schedule.jobs else ""
+                    )
+                except Exception:
+                    next_run = ""
+                self._send_json({"next_run": next_run})
+                return
+
+            if path == "/api/napcat":
+                napcat_error = ""
+                napcat_status = None
+                login_info = None
+                try:
+                    napcat_status = bot.get_status()
+                except Exception as e:
+                    napcat_error = str(e)
+                try:
+                    login_info = bot.get_login_info()
+                except Exception as e:
+                    napcat_error = napcat_error or str(e)
+                self._send_json({"error": napcat_error, "status": napcat_status, "login": login_info})
                 return
 
             self._send_text("Not Found", HTTPStatus.NOT_FOUND)
@@ -546,6 +575,35 @@ def _make_admin_handler(
                         summary = controller.like_users([user_id], 1, "manual")
                     else:
                         summary = controller.like_all(1, "manual")
+                    self._send_json(summary)
+                except Exception as e:
+                    self._send_json({"error": str(e)}, HTTPStatus.INTERNAL_SERVER_ERROR)
+                return
+
+            if path == "/api/toggle_schedule":
+                try:
+                    enabled_raw = payload.get("enabled")
+                    enabled = enabled_raw if isinstance(enabled_raw, bool) else _parse_bool(str(enabled_raw), True)
+                    state = store.update(schedule_enabled=enabled)
+                    self._send_json(asdict(state))
+                except Exception as e:
+                    self._send_json({"error": str(e)}, HTTPStatus.INTERNAL_SERVER_ERROR)
+                return
+
+            if path == "/api/run":
+                try:
+                    user_id = str(payload.get("user_id") or "").strip()
+                    times = payload.get("times", 1)
+                    try:
+                        times_int = int(times)
+                    except Exception:
+                        times_int = 1
+                    times_int = max(1, min(times_int, 10))
+                    reason = str(payload.get("reason") or "manual").strip() or "manual"
+                    if user_id:
+                        summary = controller.like_users([user_id], times_int, reason)
+                    else:
+                        summary = controller.like_all(times_int, reason)
                     self._send_json(summary)
                 except Exception as e:
                     self._send_json({"error": str(e)}, HTTPStatus.INTERNAL_SERVER_ERROR)

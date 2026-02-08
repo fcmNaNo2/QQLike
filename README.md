@@ -27,7 +27,9 @@ vim docker-compose.yml
 #    然后访问 http://localhost:6099/webui?token=xxx
 
 # 4. 打开点赞管理页面（手动点一次点赞 / 开关定时任务）
-#    http://localhost:8088
+#    单 bot 管理页：http://localhost:8088
+#
+#    统一管理页（聚合多个 like-bot）：http://localhost:8099
 
 # 5. 查看日志
 docker compose logs -f

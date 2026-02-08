@@ -74,7 +74,8 @@ docker compose logs --tail=50 napcat-account1 | grep -E "WebUi Token|User Panel 
 
 你也可以打开点赞管理页面，手动点击“点赞一次”：
 
-`http://localhost:8088`
+- 单 bot 管理页：`http://localhost:8088`
+- 统一管理页（推荐）：`http://localhost:8099`
 
 ## 多小号配置
 
@@ -98,6 +99,8 @@ docker compose logs --tail=50 napcat-account1 | grep -E "WebUi Token|User Panel 
 4. **分别登录**：
    - 小号2：访问 `http://localhost:6100/webui`
    - 小号3：访问 `http://localhost:6101/webui`
+   - 小号4：访问 `http://localhost:6102/webui`
+   - 小号5：访问 `http://localhost:6103/webui`
 
 ## 实际效果
 

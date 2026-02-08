@@ -53,8 +53,13 @@ fi
 echo "✓ Docker 环境检查通过"
 echo ""
 
-# 创建数据目录
-mkdir -p napcat_data/account1/qq napcat_data/account1/config like_bot_data/account1
+# 创建数据目录（按需启用多小号时会用到）
+mkdir -p \
+  napcat_data/account1/qq napcat_data/account1/config like_bot_data/account1 \
+  napcat_data/account2/qq napcat_data/account2/config like_bot_data/account2 \
+  napcat_data/account3/qq napcat_data/account3/config like_bot_data/account3 \
+  napcat_data/account4/qq napcat_data/account4/config like_bot_data/account4 \
+  napcat_data/account5/qq napcat_data/account5/config like_bot_data/account5
 echo "✓ 创建数据目录"
 echo ""
 

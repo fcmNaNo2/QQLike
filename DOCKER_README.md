@@ -54,7 +54,8 @@ curl -sS -X POST http://localhost:3000/get_status \
 
 管理页面（手动点赞一次 / 开关定时任务）：
 
-`http://localhost:8088`
+- 单 bot 管理页：`http://localhost:8088`
+- 统一管理页（聚合多个 like-bot，推荐）：`http://localhost:8099`
 
 ## 多小号配置
 
